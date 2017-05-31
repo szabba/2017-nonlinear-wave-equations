@@ -17,27 +17,27 @@ var (
 )
 
 func main() {
-	flag.IntVar(&cells, "-cells", 50, "the number of cells the domain is divided in")
-	flag.IntVar(&cells, "c", 50, "shorthand for --cells")
+	flag.IntVar(&cells, "cells", 50, "the number of cells the domain is divided in")
+	flag.IntVar(&cells, "c", 50, "shorthand for -cells")
 
-	flag.Float64Var(&L, "-domain-width", 50, "the width of the domain")
-	flag.Float64Var(&L, "w", 50, "shorthand for --domain-width")
+	flag.Float64Var(&L, "domain-width", 50, "the width of the domain")
+	flag.Float64Var(&L, "w", 50, "shorthand for -domain-width")
 
-	flag.Float64Var(&α, "-alpha", 0.1, "the α parameter")
-	flag.Float64Var(&α, "α", 0.1, "shorthand for --alpha")
-	flag.Float64Var(&α, "a", 0.1, "shorthand for --alpha")
+	flag.Float64Var(&α, "alpha", 0.1, "the α parameter")
+	flag.Float64Var(&α, "α", 0.1, "shorthand for -alpha")
+	flag.Float64Var(&α, "a", 0.1, "shorthand for -alpha")
 
 	// QUESTION: Should this be computed based on the initial condition instead?
 	// ANSWER: No, bc H is not specified!
-	flag.Float64Var(&β, "-beta", 0.1, "the β parameter")
-	flag.Float64Var(&β, "β", 0.1, "shorthand for --beta")
-	flag.Float64Var(&β, "b", 0.1, "shorthand for --beta")
+	flag.Float64Var(&β, "beta", 0.1, "the β parameter")
+	flag.Float64Var(&β, "β", 0.1, "shorthand for -beta")
+	flag.Float64Var(&β, "b", 0.1, "shorthand for -beta")
 
-	flag.IntVar(&N, "-steps", 10000, "number of simulation steps to perform")
-	flag.IntVar(&N, "N", 10000, "shorthand for --steps")
+	flag.IntVar(&N, "steps", 10000, "number of simulation steps to perform")
+	flag.IntVar(&N, "N", 10000, "shorthand for -steps")
 
-	flag.IntVar(&dumps, "-dumps", 100, "number of states to dump")
-	flag.IntVar(&dumps, "D", 100, "shorthand for --dumps")
+	flag.IntVar(&dumps, "dumps", 100, "number of states to dump")
+	flag.IntVar(&dumps, "D", 100, "shorthand for -dumps")
 
 	flag.Parse()
 
