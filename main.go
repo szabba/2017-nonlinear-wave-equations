@@ -17,6 +17,10 @@ func (leap *LeapFrog) Step() {
 	leap.Curr, leap.Prev = leap.Next, leap.Curr
 }
 
+func NewDomain(size int) *Domain {
+	return &Domain{size}
+}
+
 type Domain struct {
 	size int
 }
