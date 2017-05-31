@@ -12,6 +12,8 @@ var (
 	L     float64
 	cells int
 	α, β  float64
+
+	N, dumps int
 )
 
 func main() {
@@ -19,7 +21,7 @@ func main() {
 	flag.IntVar(&cells, "c", 50, "shorthand for --cells")
 
 	flag.Float64Var(&L, "-domain-width", 50, "the width of the domain")
-	flag.Float64Var(&L, "-w", 50, "shorthand for --domain-width")
+	flag.Float64Var(&L, "w", 50, "shorthand for --domain-width")
 
 	flag.Float64Var(&α, "-alpha", 0.1, "the α parameter")
 	flag.Float64Var(&α, "α", 0.1, "shorthand for --alpha")
@@ -30,6 +32,12 @@ func main() {
 	flag.Float64Var(&β, "-beta", 0.1, "the β parameter")
 	flag.Float64Var(&β, "β", 0.1, "shorthand for --beta")
 	flag.Float64Var(&β, "b", 0.1, "shorthand for --beta")
+
+	flag.IntVar(&N, "-steps", 10000, "number of simulation steps to perform")
+	flag.IntVar(&N, "N", 10000, "shorthand for --steps")
+
+	flag.IntVar(&dumps, "-dumps", 100, "number of states to dump")
+	flag.IntVar(&dumps, "D", 100, "shorthand for --dumps")
 
 	flag.Parse()
 
@@ -48,7 +56,29 @@ func main() {
 			return 3.0/2.0*α*f.At(i)*Dx(f, i) + 1.0/6.0*β*D3x(f, i)
 		},
 	}
-	_ = leap
+
+	Δdump := N / dumps
+	for i := 0; i < N; i++ {
+
+		if i%Δdump == 0 {
+			err := Dump(os.Stdout, leap.Curr)
+			if err != nil {
+				log.Fatalf("dump %d failed: %s", i/dumps, err)
+			}
+		}
+
+		leap.Step()
+	}
+}
+
+// TODO: Remove
+var i = 0
+
+// TODO: Fill in.
+func Dump(w io.Writer, f State) error {
+	defer func() { i++ }()
+	_, err := fmt.Fprintf(w, "dump %d\n", i)
+	return err
 }
 
 func Dx(f State, i int) float64 {
