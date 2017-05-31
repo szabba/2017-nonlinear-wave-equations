@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"os"
+
+	"github.com/szabba/2017-nonlinear-wave-equations/waves"
 )
 
 var (
@@ -41,7 +43,7 @@ func main() {
 
 	flag.Parse()
 
-	dom := NewDomain(L, cells)
+	dom := waves.NewDomain(L, cells)
 
 	init, err := ReadState(os.Stdin, dom)
 	if err != nil {
@@ -75,30 +77,30 @@ func main() {
 var i = 0
 
 // TODO: Fill in.
-func Dump(w io.Writer, f State) error {
+func Dump(w io.Writer, f waves.State) error {
 	defer func() { i++ }()
 	_, err := fmt.Fprintf(w, "dump %d\n", i)
 	return err
 }
 
-func Dx(f State, i int) float64 {
+func Dx(f waves.State, i int) float64 {
 	dom := f.Domain()
 	return 1 / (2 * dom.Δx()) * (f.At(dom.Wrap(i+1)) - f.At(dom.Wrap(i-1)))
 }
 
-func D2x(f State, i int) float64 {
+func D2x(f waves.State, i int) float64 {
 	dom := f.Domain()
 	return 1 / (2 * dom.Δx()) * (Dx(f, i+1) - Dx(f, i-1))
 }
 
-func D3x(f State, i int) float64 {
+func D3x(f waves.State, i int) float64 {
 	dom := f.Domain()
 	return 1 / (2 * dom.Δx()) * (D2x(f, i+1) - D2x(f, i-1))
 }
 
 type LeapFrog struct {
-	Dom              *Domain
-	Next, Curr, Prev State
+	Dom              *waves.Domain
+	Next, Curr, Prev waves.State
 	F_t              func(i int) float64
 	Δt               float64
 }
@@ -110,37 +112,7 @@ func (leap *LeapFrog) Step() {
 	leap.Curr, leap.Prev = leap.Next, leap.Curr
 }
 
-type Domain struct {
-	width float64
-	cells int
-}
-
-func NewDomain(width float64, cells int) *Domain {
-	return &Domain{width, cells}
-}
-
-func (dom *Domain) Δx() float64 { return dom.Width() / float64(dom.Cells()) }
-
-func (dom *Domain) Width() float64 { return dom.width }
-
-func (dom *Domain) Cells() int { return dom.cells }
-
-func (dom *Domain) Wrap(i int) int {
-	for i < 0 {
-		i += dom.cells
-	}
-	for i >= dom.cells {
-		i -= dom.cells
-	}
-	return i
-}
-
-type State struct {
-	dom  *Domain
-	data []float64
-}
-
-func ReadState(r io.Reader, dom *Domain) (State, error) {
+func ReadState(r io.Reader, dom *waves.Domain) (waves.State, error) {
 
 	vals := make([]float64, dom.Cells())
 	var err error
@@ -149,22 +121,8 @@ func ReadState(r io.Reader, dom *Domain) (State, error) {
 	}
 
 	if err != nil {
-		return State{}, err
+		return waves.State{}, err
 	}
 
 	return dom.New(func(i int) float64 { return vals[i] }), nil
-}
-
-func (dom *Domain) New(f func(i int) float64) State {
-	st := State{dom, make([]float64, dom.cells)}
-	for i := range st.data {
-		st.data[i] = f(i)
-	}
-	return st
-}
-
-func (st State) Domain() *Domain { return st.dom }
-
-func (st State) At(i int) float64 {
-	return st.data[st.dom.Wrap(i)]
 }
