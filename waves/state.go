@@ -18,3 +18,9 @@ func (st State) Domain() *Domain { return st.dom }
 func (st State) At(i int) float64 {
 	return st.data[st.dom.Wrap(i)]
 }
+
+func (st State) ToSlice() []float64 {
+	out := make([]float64, st.Domain().Cells())
+	copy(out, st.data)
+	return out
+}
