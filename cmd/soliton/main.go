@@ -13,8 +13,9 @@ import (
 
 func main() {
 	var (
-		cells int
-		cfg   Config
+		cells   int
+		Δt_frac float64
+		cfg     Config
 	)
 
 	flag.IntVar(&cells, "cells", 50, "the number of cells the domain is divided in")
@@ -33,11 +34,15 @@ func main() {
 	flag.Float64Var(&cfg.Beta, "β", 0.1, "shorthand for -beta")
 	flag.Float64Var(&cfg.Beta, "b", 0.1, "shorthand for -beta")
 
+	flag.Float64Var(&Δt_frac, "dt-frac", 1, "fraction of the max Δt that should be used")
+	flag.Float64Var(&Δt_frac, "f", 1, "shorthand for -dt-frac")
+
 	flag.Parse()
 
 	cellWidth := cfg.Width / float64(cells)
 
-	cfg.Δt = math.Pow(cellWidth, 3) / 4
+	Δt_max := math.Pow(cellWidth, 3) / 4
+	cfg.Δt = Δt_frac * Δt_max
 
 	cfg.Now = make([]float64, cells)
 	cfg.Before = make([]float64, cells)
