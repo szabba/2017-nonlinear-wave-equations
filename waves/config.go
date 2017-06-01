@@ -11,20 +11,6 @@ type Config struct {
 	Δt     float64   `json:"dt"`
 }
 
-// func FromState(f *State, α, β, Δt float64) Config {
-
-// 	cells := make([]float64, f.Domain().Cells())
-// 	for i := range cells {
-// 		cells[i] = f.At(i)
-// 	}
-
-// 	return Config{
-// 		Alpha: α, Beta: β, Δt: Δt,
-// 		Width: f.Domain().Width(),
-// 		Cells: cells,
-// 	}
-// }
-
 func (cfg Config) InitState() (now, before State) {
 	if len(cfg.Now) != len(cfg.Before) {
 		log.Fatalf("now has %d cells, while before has %d", len(cfg.Now), len(cfg.Before))
