@@ -72,13 +72,16 @@ func Dump(w io.Writer, now, before waves.State) error {
 	defer func() { i++ }()
 
 	var content struct {
-		Now []float64 `json:"now"`
+		Now    []float64 `json:"now"`
+		Now_t  []float64 `json:"now_t"`
+		Before []float64 `json:"before"`
 	}
 
-	content.Now = make([]float64, now.Domain().Cells())
-	for i := range content.Now {
-		content.Now[i] = now.At(i)
-	}
+	dom := now.Domain()
+
+	content.Now = now.ToSlice()
+	content.Now_t = dom.New(func(i int) float64 { return F_t(now, i) }).ToSlice()
+	content.Before = before.ToSlice()
 
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "    ")
