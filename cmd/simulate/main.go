@@ -34,11 +34,12 @@ func main() {
 	}
 	α, β = cfg.Alpha, cfg.Beta
 
-	init := cfg.InitState()
+	now, before := cfg.InitState()
 
 	var leap LeapFrog
 	leap = LeapFrog{
-		Dom: init.Domain(), Curr: init, Prev: init,
+		Dom: now.Domain(), Curr: now, Prev: before,
+
 		F_t: func(i int) float64 {
 			f := leap.Curr
 			return 3.0/2.0*α*f.At(i)*Dx(f, i) + 1.0/6.0*β*D3x(f, i)
@@ -49,7 +50,7 @@ func main() {
 	for i := 0; i < N; i++ {
 
 		if i%Δdump == 0 {
-			err := Dump(os.Stdout, leap.Curr)
+			err := Dump(os.Stdout, leap.Curr, leap.Prev)
 			if err != nil {
 				log.Fatalf("dump %d failed: %s", i/dumps, err)
 			}
@@ -65,24 +66,22 @@ var i = 0
 // TODO: Fill in.
 // * Conserved quantities, incl volume.
 // * Derivative
-func Dump(w io.Writer, f waves.State) error {
+func Dump(w io.Writer, now, before waves.State) error {
 	defer func() { i++ }()
 
-	cells := make([]float64, f.Domain().Cells())
-	for i := range cells {
-		cells[i] = f.At(i)
+	var content struct {
+		Now []float64 `json:"now"`
 	}
 
-	cfg := waves.Config{
-		Alpha: α, Beta: β,
-		Width: f.Domain().Width(),
-		Cells: cells,
+	content.Now = make([]float64, now.Domain().Cells())
+	for i := range content.Now {
+		content.Now[i] = now.At(i)
 	}
 
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "    ")
 
-	return enc.Encode(cfg)
+	return enc.Encode(content)
 }
 
 func Dx(f waves.State, i int) float64 {

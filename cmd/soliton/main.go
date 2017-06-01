@@ -39,8 +39,9 @@ func main() {
 
 	cfg.Δt = math.Pow(cellWidth, 3) / 4
 
-	cfg.Cells = make([]float64, cells)
-	for i := range cfg.Cells {
+	cfg.Now = make([]float64, cells)
+	cfg.Before = make([]float64, cells)
+	for i := range cfg.Now {
 		x0 := -cfg.Width / 2
 		xMin := x0 + float64(i)*cellWidth
 		xMax := x0 + float64(i+1)*cellWidth
@@ -49,7 +50,8 @@ func main() {
 		// FIXME: ?
 		// The other program expects a moving ref frame init cond
 		// η is expressed in the static ref frame.
-		cfg.Cells[i] = cfg.η(xMid, 0)
+		cfg.Now[i] = cfg.η(xMid, 0)
+		cfg.Before[i] = cfg.η(xMid, -cfg.Δt)
 	}
 
 	enc := json.NewEncoder(os.Stdout)
