@@ -63,6 +63,8 @@ func main() {
 var i = 0
 
 // TODO: Fill in.
+// * Conserved quantities, incl volume.
+// * Derivative
 func Dump(w io.Writer, f waves.State) error {
 	defer func() { i++ }()
 
