@@ -41,10 +41,7 @@ func main() {
 		Δt: cfg.Δt, Dom: now.Domain(),
 		Curr: now, Prev: before,
 
-		F_t: func(i int) float64 {
-			f := leap.Curr
-			return 3.0/2.0*α*f.At(i)*Dx(f, i) + 1.0/6.0*β*D3x(f, i)
-		},
+		F_t: func(i int) float64 { return F_t(leap.Curr, i) },
 	}
 
 	Δdump := N / dumps
@@ -59,6 +56,10 @@ func main() {
 
 		leap.Step()
 	}
+}
+
+func F_t(f waves.State, i int) float64 {
+	return -Dx(f, i) - 3.0/2.0*α*f.At(i)*Dx(f, i) - 1.0/6.0*β*D3x(f, i)
 }
 
 // TODO: Remove
