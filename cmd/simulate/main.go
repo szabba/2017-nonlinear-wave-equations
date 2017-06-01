@@ -38,7 +38,8 @@ func main() {
 
 	var leap LeapFrog
 	leap = LeapFrog{
-		Dom: now.Domain(), Curr: now, Prev: before,
+		Δt: cfg.Δt, Dom: now.Domain(),
+		Curr: now, Prev: before,
 
 		F_t: func(i int) float64 {
 			f := leap.Curr
