@@ -67,7 +67,7 @@ type Config struct {
 }
 
 func (cfg Config) η(x, t float64) float64 {
-	return math.Pow(Sech(math.Sqrt(0.75*cfg.Alpha/cfg.Beta)*(x-t*(1-cfg.Alpha/2))), 2)
+	return math.Pow(Sech(math.Sqrt(0.75*cfg.Alpha/cfg.Beta)*(x-(1+cfg.Alpha/2)*t)), 2)
 }
 
 func Sech(x float64) float64 {
