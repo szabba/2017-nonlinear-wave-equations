@@ -5,9 +5,10 @@ type Config struct {
 	Beta  float64   `json:"beta"`
 	Width float64   `json:"width"`
 	Cells []float64 `json:"cells"`
+	Δt    float64   `json:"dt"`
 }
 
-func FromState(f *State, α, β float64) Config {
+func FromState(f *State, α, β, Δt float64) Config {
 
 	cells := make([]float64, f.Domain().Cells())
 	for i := range cells {
@@ -15,7 +16,7 @@ func FromState(f *State, α, β float64) Config {
 	}
 
 	return Config{
-		Alpha: α, Beta: β,
+		Alpha: α, Beta: β, Δt: Δt,
 		Width: f.Domain().Width(),
 		Cells: cells,
 	}

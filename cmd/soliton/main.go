@@ -37,6 +37,8 @@ func main() {
 
 	cellWidth := cfg.Width / float64(cells)
 
+	cfg.Δt = math.Pow(cellWidth, 3) / 4
+
 	cfg.Cells = make([]float64, cells)
 	for i := range cfg.Cells {
 		x0 := -cfg.Width / 2
