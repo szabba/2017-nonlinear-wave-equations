@@ -99,15 +99,15 @@ func D3x(f waves.State, i int) float64 {
 }
 
 type LeapFrog struct {
-	Dom              *waves.Domain
-	Next, Curr, Prev waves.State
-	F_t              func(i int) float64
-	Δt               float64
+	Dom        *waves.Domain
+	Curr, Prev waves.State
+	F_t        func(i int) float64
+	Δt         float64
 }
 
 func (leap *LeapFrog) Step() {
-	leap.Next = leap.Dom.New(func(i int) float64 {
+	next := leap.Dom.New(func(i int) float64 {
 		return leap.Prev.At(i) + 2*leap.Δt*leap.F_t(i)
 	})
-	leap.Curr, leap.Prev = leap.Next, leap.Curr
+	leap.Curr, leap.Prev = next, leap.Curr
 }
