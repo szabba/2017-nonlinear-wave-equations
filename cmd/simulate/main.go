@@ -75,6 +75,7 @@ func Dump(w io.Writer, now, before waves.State) error {
 		Now    []float64 `json:"now"`
 		Now_t  []float64 `json:"now_t"`
 		Before []float64 `json:"before"`
+		V      float64   `json:"volume"`
 	}
 
 	dom := now.Domain()
@@ -82,11 +83,20 @@ func Dump(w io.Writer, now, before waves.State) error {
 	content.Now = now.ToSlice()
 	content.Now_t = dom.New(func(i int) float64 { return F_t(now, i) }).ToSlice()
 	content.Before = before.ToSlice()
+	content.V = Volume(now)
 
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "    ")
 
 	return enc.Encode(content)
+}
+
+func Volume(f waves.State) float64 {
+	V := 0.0
+	for i := 0; i < f.Domain().Cells(); i++ {
+		V += f.At(i)
+	}
+	return V
 }
 
 func Dx(f waves.State, i int) float64 {
