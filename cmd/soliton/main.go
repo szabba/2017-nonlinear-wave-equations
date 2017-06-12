@@ -76,5 +76,5 @@ func (cfg Config) η(x, t float64) float64 {
 }
 
 func Sech(x float64) float64 {
-	return 1 / math.Pow(math.Cosh(x), 2)
+	return 1 / math.Cosh(x)
 }
